@@ -1,0 +1,52 @@
+name: Update yt-dlp Sidecar
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Every Monday at 2am UTC
+  workflow_dispatch:       # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-ytdlp:
+    name: Check and Update yt-dlp Sidecar
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest yt-dlp release version
+        id: ytdlp-version
+        run: |
+          $release = Invoke-RestMethod "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest"
+          echo "version=$($release.tag_name)" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Check current sidecar version
+        id: current-version
+        run: |
+          if (Test-Path "src-tauri/binaries/yt-dlp-version.txt") {
+            $v = (Get-Content "src-tauri/binaries/yt-dlp-version.txt").Trim()
+            echo "version=$v" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "version=none" >> $env:GITHUB_OUTPUT
+          }
+        shell: pwsh
+
+      - name: Download updated yt-dlp
+        if: steps.ytdlp-version.outputs.version != steps.current-version.outputs.version
+        run: |
+          $version = "${{ steps.ytdlp-version.outputs.version }}"
+          $url = "https://github.com/yt-dlp/yt-dlp/releases/download/$version/yt-dlp.exe"
+          Write-Host "Downloading updated yt-dlp $version from $url..."
+          Invoke-WebRequest -Uri $url -OutFile "src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe" -UseBasicParsing
+          $version | Set-Content "src-tauri/binaries/yt-dlp-version.txt" -Encoding UTF8
+        shell: pwsh
+
+      - name: Commit updated sidecar
+        if: steps.ytdlp-version.outputs.version != steps.current-version.outputs.version
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(sidecar): update yt-dlp to ${{ steps.ytdlp-version.outputs.version }}"
+          file_pattern: "src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe src-tauri/binaries/yt-dlp-version.txt"
+          branch: main

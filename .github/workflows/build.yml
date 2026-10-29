@@ -1,0 +1,64 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-windows:
+    name: Build Windows x64
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Cache yt-dlp sidecar
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe
+          key: ytdlp-sidecar-${{ hashFiles('src-tauri/binaries/yt-dlp-version.txt') }}
+
+      - name: Install frontend deps
+        run: pnpm install
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        with:
+          tauriScript: pnpm tauri
+          args: --target x86_64-pc-windows-msvc
+
+      - name: Build MCP server
+        run: cargo build --release -p ytdeck-mcp
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64-build
+          path: |
+            src-tauri/target/x86_64-pc-windows-msvc/release/yt-dlp-gui.exe
+            target/release/ytdeck-mcp.exe
+            target/release/bundle/nsis/*.exe
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+          retention-days: 7

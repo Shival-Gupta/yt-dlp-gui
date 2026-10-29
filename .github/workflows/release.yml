@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    name: Release Windows x64
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Cache yt-dlp sidecar
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe
+          key: ytdlp-sidecar-${{ hashFiles('src-tauri/binaries/yt-dlp-version.txt') }}
+
+      - name: Install frontend deps
+        run: pnpm install
+
+      - name: Build and release with Tauri
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tauriScript: pnpm tauri
+          tagName: ${{ github.ref_name }}
+          releaseName: "yt-dlp GUI ${{ github.ref_name }}"
+          releaseBody: |
+            ## yt-dlp GUI ${{ github.ref_name }}
+
+            See [CHANGELOG.md](https://github.com/Shival-Gupta/yt-dlp-gui/blob/main/CHANGELOG.md) for changes.
+
+            ### Installation
+            Download and run `YTDeck-Setup-*.exe`. Windows SmartScreen may warn — click "More info → Run anyway" (self-signed developer certificate).
+
+            ### Requirements
+            - Windows 10 1903+ (x64)
+            - Internet connection during install (downloads FFmpeg, Deno)
+          releaseDraft: false
+          prerelease: false
+          args: --target x86_64-pc-windows-msvc
+
+      - name: Build MCP server
+        run: cargo build --release -p ytdeck-mcp
+
+      - name: Upload MCP server to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/release/ytdeck-mcp.exe
+            src-tauri/target/x86_64-pc-windows-msvc/release/ytdeck-mcp.exe
+          tag_name: ${{ github.ref_name }}
+
+      - name: Synthesize updater manifest
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          $date = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+          $json = @{
+            version = $version
+            notes = "See GitHub release ${{ github.ref_name }} for full details and changelog."
+            pub_date = $date
+            platforms = @{
+              "windows-x86_64" = @{
+                url = "https://github.com/Shival-Gupta/yt-dlp-gui/releases/download/${{ github.ref_name }}/YTDeck-Setup-${{ github.ref_name }}.exe"
+                signature = ""
+              }
+            }
+          } | ConvertTo-Json -Depth 5
+          $json | Set-Content "updates/latest.json" -Encoding UTF8
+        shell: pwsh
+
+      - name: Commit updated latest.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update updates/latest.json for ${{ github.ref_name }}"
+          file_pattern: updates/latest.json
+          branch: main
