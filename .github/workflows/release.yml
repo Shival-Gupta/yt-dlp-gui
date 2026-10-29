@@ -75,7 +75,7 @@ jobs:
         run: cargo build --release -p ytdeck-mcp
 
       - name: Upload MCP server to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             target/release/ytdeck-mcp.exe
