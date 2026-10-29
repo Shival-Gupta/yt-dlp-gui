@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { translateErrorMessage } from '../../helpers/error-translator';
+import { translateErrorMessage } from '../../../src/lib/error-messages';
 
 describe('Tier 2: Boundary & Corner Cases — Missing Sidecars Fallback', () => {
   it('should intercept missing FFmpeg sidecar error and provide actionable guidance', () => {

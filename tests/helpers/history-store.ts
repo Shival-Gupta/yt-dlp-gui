@@ -41,7 +41,7 @@ export class HistoryStore {
     if (!query || query.trim().length === 0) return this.getAll();
     const q = query.toLowerCase().trim();
     return this.entries.filter(
-      e => e.title.toLowerCase().includes(q) || e.url.toLowerCase().includes(q)
+      e => (e.title && e.title.toLowerCase().includes(q)) || (e.url && e.url.toLowerCase().includes(q))
     );
   }
 

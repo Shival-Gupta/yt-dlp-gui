@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { HistoryStore } from '../../helpers/history-store';
+import { HistoryStore } from '../../../src/stores/historyStore';
 import { MockTauriIpc } from '../../helpers/mock-ipc';
-import { parseProgressLine } from '../../helpers/progress-parser';
+import { parseProgressLine } from '../../../src/lib/progress-parser';
 
 describe('Tier 3: Cross-Feature Combinations — Batch Download & History Tracking', () => {
   it('should process a batch of URLs through IPC, parse progress, and record entries in history', async () => {

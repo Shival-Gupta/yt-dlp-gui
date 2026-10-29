@@ -63,16 +63,33 @@ pub async fn cancel_download(state: State<'_, AppState>, job_id: String) -> Resu
 
 #[tauri::command]
 pub async fn pause_download(state: State<'_, AppState>, job_id: String) -> Result<(), String> {
-    // yt-dlp does not have native pause signals on Windows without SIGSTOP/DebugActiveProcess,
-    // so we set status and kill child gracefully, preserving partial download state
+    // Set status to paused before killing so that the completion monitor detects it
+    state.set_job_status(&job_id, "paused");
     let _ = state.kill_process(&job_id).await;
     state.set_job_status(&job_id, "paused");
     Ok(())
 }
 
 #[tauri::command]
-pub async fn resume_download(state: State<'_, AppState>, job_id: String) -> Result<(), String> {
+pub async fn resume_download(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    job_id: String,
+) -> Result<(), String> {
     state.set_job_status(&job_id, "downloading");
+
+    // If child process is not running, respawn yt-dlp with saved arguments
+    let is_running = {
+        let procs = state.processes.lock().await;
+        procs.contains_key(&job_id)
+    };
+
+    if !is_running {
+        if let Some(args) = state.get_job_args(&job_id) {
+            sidecar::spawn_ytdlp(app, &state, job_id, args).await?;
+        }
+    }
+
     Ok(())
 }
 

@@ -139,13 +139,24 @@ export function parseFFormats(rawText: string): YtdlpFormat[] {
 
     if (!headerSeen) continue
 
-    // Format lines start with ID (alphanumeric/hyphens)
-    // E.g.: "249 webm audio only 2 │ 1.54MiB 51k https │ audio only opus [51k]"
-    // or: "137 mp4 1920x1080 30 │ 120.34MiB 4500k https │ avc1.640028 4500k video only"
+    // Discard non-format lines (warnings, errors, download progress, logs, comments)
+    if (
+      trimmed.startsWith('WARNING:') ||
+      trimmed.startsWith('ERROR:') ||
+      trimmed.startsWith('[') ||
+      trimmed.startsWith('Note:') ||
+      trimmed.startsWith('Deleting')
+    ) {
+      continue
+    }
+
     const tokens = trimmed.split(/\s+/)
     if (tokens.length < 2) continue
 
     const formatId = tokens[0]
+    if (formatId.endsWith(':') || formatId.startsWith('[') || formatId.startsWith('(')) {
+      continue
+    }
     const ext = tokens[1]
 
     let resolution: string | undefined
@@ -199,6 +210,125 @@ export function parseFFormats(rawText: string): YtdlpFormat[] {
       vcodec,
       acodec,
       note: trimmed,
+    })
+  }
+
+  return formats
+}
+
+export interface ParsedFormatRow {
+  format_id: string
+  ext: string
+  resolution: string
+  fps?: number | null
+  tbr?: number | null
+  vcodec?: string
+  acodec?: string
+  filesize?: number | null
+  note?: string
+  isVideoOnly?: boolean
+  isAudioOnly?: boolean
+  isCombined?: boolean
+}
+
+/**
+ * Parses raw stdout table of yt-dlp -F <url> with column analysis and type categorization.
+ */
+export function parseFormatTable(rawOutput: string): ParsedFormatRow[] {
+  const formats: ParsedFormatRow[] = []
+  const lines = rawOutput.split(/\r?\n/)
+
+  let headerIndex = -1
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim()
+    if (line.startsWith('ID') && line.includes('EXT') && line.includes('RESOLUTION')) {
+      headerIndex = i
+      break
+    }
+  }
+
+  if (headerIndex === -1) {
+    return formats
+  }
+
+  for (let i = headerIndex + 1; i < lines.length; i++) {
+    const rawLine = lines[i]
+    if (!rawLine || rawLine.trim().length === 0) continue
+    const trimmed = rawLine.trim()
+    if (trimmed.startsWith('─') || trimmed.startsWith('-')) continue
+
+    // Filter out trailing warnings, errors, download status, or info lines
+    if (
+      trimmed.startsWith('WARNING:') ||
+      trimmed.startsWith('ERROR:') ||
+      trimmed.startsWith('[') ||
+      trimmed.startsWith('Note:') ||
+      trimmed.startsWith('Deleting')
+    ) {
+      continue
+    }
+
+    const cleanLine = rawLine.replace(/│/g, ' ').replace(/\|/g, ' ')
+    const parts = cleanLine.trim().split(/\s+/)
+    if (parts.length < 3) continue
+
+    const formatId = parts[0]
+    if (formatId.endsWith(':') || formatId.startsWith('[') || formatId.startsWith('(')) {
+      continue
+    }
+    const ext = parts[1]
+
+    let resolution = parts[2]
+    let fps: number | null = null
+    let index = 3
+
+    if (resolution === 'audio' && parts[3] === 'only') {
+      resolution = 'audio only'
+      index = 4
+    }
+
+    if (index < parts.length && /^\d+$/.test(parts[index]) && resolution !== 'audio only') {
+      fps = parseInt(parts[index], 10)
+      index++
+    }
+
+    const remaining = parts.slice(index).join(' ')
+    const isAudioOnly = resolution === 'audio only' || remaining.includes('audio only')
+    const isVideoOnly = remaining.includes('video only') && !isAudioOnly
+    const isCombined = !isAudioOnly && !isVideoOnly && !remaining.includes('storyboard')
+
+    const tbrMatch = remaining.match(/(\d+)[kK]/)
+    const tbr = tbrMatch ? parseInt(tbrMatch[1], 10) : null
+
+    let vcodec: string | undefined = undefined
+    let acodec: string | undefined = undefined
+
+    if (isAudioOnly) {
+      vcodec = 'none'
+      if (remaining.includes('opus')) acodec = 'opus'
+      else if (remaining.includes('mp4a') || remaining.includes('m4a')) acodec = 'mp4a'
+    } else if (isVideoOnly) {
+      acodec = 'none'
+      if (remaining.includes('avc1')) vcodec = 'avc1'
+      else if (remaining.includes('vp9')) vcodec = 'vp9'
+      else if (remaining.includes('av01')) vcodec = 'av01'
+    } else if (isCombined) {
+      if (remaining.includes('avc1')) vcodec = 'avc1'
+      if (remaining.includes('mp4a')) acodec = 'mp4a'
+    }
+
+    formats.push({
+      format_id: formatId,
+      ext,
+      resolution,
+      fps,
+      tbr,
+      vcodec,
+      acodec,
+      note: remaining,
+      isVideoOnly,
+      isAudioOnly,
+      isCombined,
     })
   }
 

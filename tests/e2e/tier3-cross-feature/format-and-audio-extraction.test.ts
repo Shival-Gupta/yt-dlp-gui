@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
 
 describe('Tier 3: Cross-Feature Combinations — Format Selector + Audio Extraction', () => {
   it('should combine bestaudio format selector with MP3 extraction pipeline', () => {

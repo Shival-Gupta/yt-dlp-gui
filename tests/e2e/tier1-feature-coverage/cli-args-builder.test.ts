@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
 
 describe('Tier 1: Feature Coverage — CLI Arguments Builder', () => {
   // Panel 1: Output Directory & Template Options

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
 
 describe('Tier 3: Cross-Feature Combinations — SponsorBlock + Metadata & Chapters', () => {
   it('should simultaneously combine SponsorBlock category removal with metadata embedding', () => {

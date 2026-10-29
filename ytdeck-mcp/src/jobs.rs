@@ -108,32 +108,36 @@ impl JobStore {
     pub async fn parse_and_update_line(&self, job_id: &str, line: &str) {
         let mut lock = self.jobs.write().await;
         if let Some(job) = lock.get_mut(job_id) {
-            if job.status == JobStatus::Queued {
-                job.status = JobStatus::Downloading;
-            }
+            let trimmed = line.trim();
 
-            // Extract percent
-            static RE_PERCENT: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
-            let re_pct = RE_PERCENT.get_or_init(|| Regex::new(r"([0-9.]+)%").unwrap());
-            if let Some(caps) = re_pct.captures(line) {
-                if let Ok(val) = caps[1].parse::<f64>() {
-                    job.progress = val;
+            if trimmed.starts_with("[download]") {
+                if job.status == JobStatus::Queued {
+                    job.status = JobStatus::Downloading;
                 }
-            }
 
-            // Extract speed
-            static RE_SPEED: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
-            let re_spd =
-                RE_SPEED.get_or_init(|| Regex::new(r"at\s+([0-9.]+\s*[KMGT]?i?B/s)").unwrap());
-            if let Some(caps) = re_spd.captures(line) {
-                job.speed = Some(caps[1].trim().to_string());
-            }
+                // Extract percent only from [download] lines
+                static RE_PERCENT: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
+                let re_pct = RE_PERCENT.get_or_init(|| Regex::new(r"([0-9.]+)%").unwrap());
+                if let Some(caps) = re_pct.captures(trimmed) {
+                    if let Ok(val) = caps[1].parse::<f64>() {
+                        job.progress = val;
+                    }
+                }
 
-            // Extract ETA
-            static RE_ETA: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
-            let re_eta = RE_ETA.get_or_init(|| Regex::new(r"ETA\s+([0-9:]+)").unwrap());
-            if let Some(caps) = re_eta.captures(line) {
-                job.eta = Some(caps[1].trim().to_string());
+                // Extract speed
+                static RE_SPEED: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
+                let re_spd =
+                    RE_SPEED.get_or_init(|| Regex::new(r"at\s+([0-9.]+\s*[KMGT]?i?B/s)").unwrap());
+                if let Some(caps) = re_spd.captures(trimmed) {
+                    job.speed = Some(caps[1].trim().to_string());
+                }
+
+                // Extract ETA
+                static RE_ETA: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
+                let re_eta = RE_ETA.get_or_init(|| Regex::new(r"ETA\s+([0-9:]+)").unwrap());
+                if let Some(caps) = re_eta.captures(trimmed) {
+                    job.eta = Some(caps[1].trim().to_string());
+                }
             }
 
             // Extract destination file path

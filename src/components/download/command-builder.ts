@@ -154,9 +154,11 @@ export function buildCliArgs(options: Partial<YtdlpOptions>): string[] {
   // URLs (appended at the end)
   if (options.urls && options.urls.length > 0) {
     for (const url of options.urls) {
-      const trimmed = url.trim()
-      if (trimmed && !args.includes(trimmed)) {
-        args.push(trimmed)
+      if (typeof url === 'string') {
+        const trimmed = url.trim()
+        if (trimmed) {
+          args.push(trimmed)
+        }
       }
     }
   }

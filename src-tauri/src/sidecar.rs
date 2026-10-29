@@ -197,7 +197,8 @@ pub async fn spawn_ytdlp(
     let stdout = child.stdout.take().ok_or("Failed to capture stdout")?;
     let stderr = child.stderr.take().ok_or("Failed to capture stderr")?;
 
-    // Register process in state
+    // Register process and arguments in state
+    state.save_job_args(&job_id, args.clone());
     state.register_process(job_id.clone(), child).await;
 
     let app_clone = app.clone();
@@ -263,6 +264,19 @@ pub async fn spawn_ytdlp(
         {
             let mut procs = procs_arc.lock().await;
             procs.remove(&job_id_mon);
+        }
+
+        // If job was paused, do not overwrite status with error or emit done failure
+        let is_paused = {
+            if let Ok(statuses) = statuses_arc.lock() {
+                statuses.get(&job_id_mon).map(|s| s == "paused").unwrap_or(false)
+            } else {
+                false
+            }
+        };
+
+        if is_paused {
+            return;
         }
 
         // Update status

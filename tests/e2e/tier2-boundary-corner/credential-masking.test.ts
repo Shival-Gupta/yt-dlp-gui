@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildMaskedCommandString, maskSensitiveArgs } from '../../helpers/cli-generator';
+import { buildMaskedCommandString, maskSensitiveArgs } from '../../../src/lib/ytdlp-args';
 
 describe('Tier 2: Boundary & Corner Cases — Credential Masking (***)', () => {
   it('should mask basic authentication credentials (-u and -p)', () => {

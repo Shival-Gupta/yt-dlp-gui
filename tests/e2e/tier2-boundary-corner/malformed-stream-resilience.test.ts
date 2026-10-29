@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseProgressLine } from '../../helpers/progress-parser';
+import { parseProgressLine } from '../../../src/lib/progress-parser';
 
 describe('Tier 2: Boundary & Corner Cases — Malformed Stream Resilience', () => {
   it('should return null on empty strings, null, undefined, or whitespace', () => {

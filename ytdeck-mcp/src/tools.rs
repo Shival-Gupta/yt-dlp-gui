@@ -832,13 +832,24 @@ fn parse_formats_table(table: &str) -> Vec<Value> {
             header_seen = true;
             continue;
         }
-        if !header_seen || trimmed.starts_with('-') || trimmed.is_empty() {
+        if !header_seen || trimmed.starts_with('-') || trimmed.starts_with('─') || trimmed.is_empty() {
+            continue;
+        }
+
+        if trimmed.starts_with("WARNING:")
+            || trimmed.starts_with("ERROR:")
+            || trimmed.starts_with('[')
+            || trimmed.starts_with("Note:")
+        {
             continue;
         }
 
         let parts: Vec<&str> = trimmed.split_whitespace().collect();
         if parts.len() >= 3 {
             let format_id = parts[0];
+            if format_id.ends_with(':') || format_id.starts_with('[') || format_id.starts_with('(') {
+                continue;
+            }
             let extension = parts[1];
             let resolution = parts[2];
             let rest = parts[3..].join(" ");

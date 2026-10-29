@@ -118,7 +118,7 @@ foreach ($client in $clientConfigs) {
         }
     }
 
-    if (-not $configObj.ContainsKey("mcpServers")) {
+    if (-not $configObj.Contains("mcpServers")) {
         $configObj["mcpServers"] = [ordered]@{}
     }
 

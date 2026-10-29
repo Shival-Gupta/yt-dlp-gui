@@ -23,11 +23,14 @@ export function buildArgs(opts: YtdlpOptions): string[] {
     ...(opts._raw ?? []),
   ]
 
-  // Append URLs at the end if provided and not already included
+  // Append URLs at the end if provided
   if (opts.urls && opts.urls.length > 0) {
     for (const url of opts.urls) {
-      if (!args.includes(url)) {
-        args.push(url)
+      if (typeof url === 'string') {
+        const trimmed = url.trim()
+        if (trimmed) {
+          args.push(trimmed)
+        }
       }
     }
   }
@@ -482,12 +485,18 @@ export const buildFilesystemArgs = (opts: YtdlpOptions): string[] => {
 export const buildExtractorArgs = (opts: YtdlpOptions): string[] => {
   const args: string[] = []
   if (opts.extractorArgs) {
-    if (typeof opts.extractorArgs === 'object') {
+    if (Array.isArray(opts.extractorArgs)) {
+      for (const item of opts.extractorArgs) {
+        if (typeof item === 'string' && item.trim()) {
+          args.push('--extractor-args', item.trim())
+        }
+      }
+    } else if (typeof opts.extractorArgs === 'object') {
       for (const [ext, kv] of Object.entries(opts.extractorArgs)) {
         args.push('--extractor-args', `${ext}:${kv}`)
       }
     } else {
-      args.push('--extractor-args', opts.extractorArgs)
+      args.push('--extractor-args', String(opts.extractorArgs))
     }
   }
   if (opts.useExtractors) {
@@ -588,7 +597,7 @@ export const buildVerbosityArgs = (opts: YtdlpOptions): string[] => {
   if (opts.noWarnings) {
     args.push('--no-warnings')
   }
-  if (opts.printToFile) {
+  if (opts.printToFile?.template && opts.printToFile?.file) {
     args.push('--print-to-file', opts.printToFile.template, opts.printToFile.file)
   }
   if (opts.compatOptions) {
@@ -644,5 +653,19 @@ export function maskSensitiveArgs(args: string[]): string[] {
 export function buildMaskedCommandString(options: Partial<YtdlpOptions>): string {
   const rawArgs = buildArgs(options as YtdlpOptions)
   const maskedArgs = maskSensitiveArgs(rawArgs)
-  return `yt-dlp ${maskedArgs.map((arg) => (arg.includes(' ') ? `"${arg}"` : arg)).join(' ')}`
+  return `yt-dlp ${maskedArgs
+    .map((arg) => {
+      if (arg.includes('"')) {
+        return `"${arg.replace(/"/g, '\\"')}"`
+      }
+      return arg.includes(' ') ? `"${arg}"` : arg
+    })
+    .join(' ')}`
 }
+
+/**
+ * Alias for buildArgs accepting Partial<YtdlpOptions> for E2E tests and components.
+ */
+export const buildYtdlpArgs = (options: Partial<YtdlpOptions>): string[] =>
+  buildArgs(options as YtdlpOptions)
+

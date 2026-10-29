@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { translateErrorMessage } from '../../helpers/error-translator';
+import { translateErrorMessage } from '../../../src/lib/error-messages';
 
 describe('Tier 2: Boundary & Corner Cases — Error Mapping & Translation', () => {
   const fixturePath = path.resolve(__dirname, '../../fixtures/error_samples.json');

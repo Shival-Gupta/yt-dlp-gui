@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { HistoryStore } from '../../helpers/history-store';
-import { HistoryEntry } from '../../helpers/contracts';
+import { HistoryStore, HistoryEntry } from '../../../src/stores/historyStore';
 
 describe('Tier 2: Boundary & Corner Cases — Circular History Limit (500 entries)', () => {
   const seedPath = path.resolve(__dirname, '../../fixtures/history_seed.json');

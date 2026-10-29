@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { parseFormatTable } from '../../helpers/format-parser';
+import { parseFormatTable } from '../../../src/lib/format-utils';
 
 describe('Tier 1: Feature Coverage — Format Parsing', () => {
   const fixturePath = path.resolve(__dirname, '../../fixtures/raw_formats_output.txt');

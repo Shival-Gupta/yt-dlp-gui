@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
 import { MockTauriIpc } from '../../helpers/mock-ipc';
-import { parseProgressLine } from '../../helpers/progress-parser';
-import { HistoryStore } from '../../helpers/history-store';
+import { parseProgressLine } from '../../../src/lib/progress-parser';
+import { HistoryStore } from '../../../src/stores/historyStore';
 
 describe('Tier 4: Real-World Scenario 1 — YouTube 4K Video Download with Subtitles & Chapters', () => {
   it('should execute end-to-end 4K workflow with subs, chapters, and metadata', async () => {

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
-import { HistoryStore } from '../../helpers/history-store';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
+import { HistoryStore } from '../../../src/stores/historyStore';
 import { MockTauriIpc } from '../../helpers/mock-ipc';
 
 describe('Tier 4: Real-World Scenario 3 — Bulk Batch Download of 50 URLs', () => {

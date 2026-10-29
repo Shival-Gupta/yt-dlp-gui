@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
 import { MockTauriIpc } from '../../helpers/mock-ipc';
 
 describe('Tier 2: Boundary & Corner Cases — Empty & Invalid Inputs', () => {

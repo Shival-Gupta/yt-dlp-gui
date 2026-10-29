@@ -8,6 +8,7 @@ use tokio::sync::Mutex as TokioMutex;
 pub struct AppState {
     pub processes: Arc<TokioMutex<HashMap<String, Arc<TokioMutex<Child>>>>>,
     pub job_statuses: Arc<StdMutex<HashMap<String, String>>>,
+    pub job_args: Arc<StdMutex<HashMap<String, Vec<String>>>>,
 }
 
 impl AppState {
@@ -15,6 +16,21 @@ impl AppState {
         Self {
             processes: Arc::new(TokioMutex::new(HashMap::new())),
             job_statuses: Arc::new(StdMutex::new(HashMap::new())),
+            job_args: Arc::new(StdMutex::new(HashMap::new())),
+        }
+    }
+
+    pub fn save_job_args(&self, job_id: &str, args: Vec<String>) {
+        if let Ok(mut map) = self.job_args.lock() {
+            map.insert(job_id.to_string(), args);
+        }
+    }
+
+    pub fn get_job_args(&self, job_id: &str) -> Option<Vec<String>> {
+        if let Ok(map) = self.job_args.lock() {
+            map.get(job_id).cloned()
+        } else {
+            None
         }
     }
 

@@ -137,3 +137,81 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     return sorted
   },
 }))
+
+/**
+ * Standalone HistoryStore with a circular FIFO buffer capped at maxEntries (default 500).
+ * Provides programmatic history tracking for components, tests, and headless contexts.
+ */
+export class HistoryStore {
+  private entries: HistoryEntry[] = []
+  private maxEntries: number
+
+  constructor(maxEntries = DEFAULT_MAX_ENTRIES, initialEntries: HistoryEntry[] = []) {
+    this.maxEntries = Math.max(1, maxEntries)
+    if (initialEntries && initialEntries.length > 0) {
+      for (const entry of initialEntries) {
+        this.addEntry(entry)
+      }
+    }
+  }
+
+  public addEntry(entry: HistoryEntry): void {
+    if (this.entries.length >= this.maxEntries) {
+      this.entries.shift()
+    }
+    this.entries.push(entry)
+  }
+
+  public getAll(): HistoryEntry[] {
+    return [...this.entries]
+  }
+
+  public count(): number {
+    return this.entries.length
+  }
+
+  public clear(): void {
+    this.entries = []
+  }
+
+  public setMaxEntries(max: number): void {
+    this.maxEntries = Math.max(1, max)
+    if (this.entries.length > this.maxEntries) {
+      this.entries = this.entries.slice(this.entries.length - this.maxEntries)
+    }
+  }
+
+  public search(query: string): HistoryEntry[] {
+    if (!query || query.trim().length === 0) return this.getAll()
+    const q = query.toLowerCase().trim()
+    return this.entries.filter(
+      (e) =>
+        (e.title && e.title.toLowerCase().includes(q)) ||
+        (e.url && e.url.toLowerCase().includes(q))
+    )
+  }
+
+  public sortBy(
+    field: 'date' | 'title' | 'size' | 'duration',
+    ascending = false
+  ): HistoryEntry[] {
+    const sorted = [...this.entries]
+    sorted.sort((a, b) => {
+      let cmp = 0
+      if (field === 'date') {
+        const timeA = new Date(a.timestamp || a.downloadedAt || 0).getTime()
+        const timeB = new Date(b.timestamp || b.downloadedAt || 0).getTime()
+        cmp = timeA - timeB
+      } else if (field === 'title') {
+        cmp = (a.title || '').localeCompare(b.title || '')
+      } else if (field === 'size') {
+        cmp = (a.filesize || 0) - (b.filesize || 0)
+      } else if (field === 'duration') {
+        cmp = (a.duration || 0) - (b.duration || 0)
+      }
+      return ascending ? cmp : -cmp
+    })
+    return sorted
+  }
+}
+

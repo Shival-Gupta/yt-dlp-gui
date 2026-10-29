@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { buildYtdlpArgs } from '../../helpers/cli-generator';
+import { buildYtdlpArgs } from '../../../src/lib/ytdlp-args';
 import { MockTauriIpc } from '../../helpers/mock-ipc';
-import { HistoryStore } from '../../helpers/history-store';
+import { HistoryStore } from '../../../src/stores/historyStore';
 
 describe('Tier 4: Real-World Scenario 2 — Audio-Only MP3 Extraction with Cover Art Embedding', () => {
   it('should execute end-to-end MP3 extraction workflow with high-res cover art', async () => {

@@ -18,3 +18,7 @@ Thumbs.db
 src-tauri/binaries/ffmpeg*
 src-tauri/binaries/ffprobe*
 
+# Python
+__pycache__/
+*.py[cod]
+

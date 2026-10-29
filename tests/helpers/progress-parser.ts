@@ -8,7 +8,8 @@ import { ProgressEvent } from './contracts';
 export function parseProgressLine(line: string): ProgressEvent | null {
   if (!line || typeof line !== 'string') return null;
 
-  const trimmed = line.trim();
+  const cleanLine = line.replace(/\u001b\[[0-9;]*[a-zA-Z]/g, '').replace(/\r/g, '');
+  const trimmed = cleanLine.trim();
   if (trimmed.length === 0) return null;
 
   // 1. Try parsing JSON progress output (used with --progress-template)

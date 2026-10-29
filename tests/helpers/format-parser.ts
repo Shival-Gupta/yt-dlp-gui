@@ -25,7 +25,17 @@ export function parseFormatTable(rawOutput: string): YtdlpFormat[] {
   for (let i = headerIndex + 1; i < lines.length; i++) {
     const rawLine = lines[i];
     if (!rawLine || rawLine.trim().length === 0) continue;
-    if (rawLine.startsWith('─') || rawLine.startsWith('-')) continue;
+    const trimmed = rawLine.trim();
+    if (trimmed.startsWith('─') || trimmed.startsWith('-')) continue;
+    if (
+      trimmed.startsWith('WARNING:') ||
+      trimmed.startsWith('ERROR:') ||
+      trimmed.startsWith('[') ||
+      trimmed.startsWith('Note:') ||
+      trimmed.startsWith('Deleting')
+    ) {
+      continue;
+    }
 
     // Split line into columns using standard yt-dlp columns
     // Columns typically: ID, EXT, RESOLUTION, FPS, CH | FILESIZE, TBR, PROTO | VCODEC, VBR, ACODEC, ABR, ASR, MORE INFO
@@ -34,6 +44,9 @@ export function parseFormatTable(rawOutput: string): YtdlpFormat[] {
     if (parts.length < 3) continue;
 
     const formatId = parts[0];
+    if (formatId.endsWith(':') || formatId.startsWith('[') || formatId.startsWith('(')) {
+      continue;
+    }
     const ext = parts[1];
 
     // Determine resolution & fps
