@@ -1,0 +1,17 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+[youtube] dQw4w9WgXcQ: Downloading webpage
+[youtube] dQw4w9WgXcQ: Downloading ios player API JSON
+[youtube] dQw4w9WgXcQ: Downloading m3u8 information
+[info] dQw4w9WgXcQ: Downloading 1 format(s): 137+140
+{"status":"downloading","downloaded_bytes":1048576,"total_bytes":37119590,"speed":1500000,"eta":24,"_percent_str":"2.8%"}
+[download]   5.0% of ~  35.40MiB at    1.85MiB/s ETA 00:18
+{"status":"downloading","downloaded_bytes":7423918,"total_bytes":37119590,"speed":2450000,"eta":12,"_percent_str":"20.0%"}
+[download]  35.2% of ~  35.40MiB at    2.65MiB/s ETA 00:09
+{"status":"downloading","downloaded_bytes":18559795,"total_bytes":37119590,"speed":3100000,"eta":6,"_percent_str":"50.0%"}
+[download]  75.0% of ~  35.40MiB at    3.20MiB/s ETA 00:03
+{"status":"downloading","downloaded_bytes":37119590,"total_bytes":37119590,"speed":3450000,"eta":0,"_percent_str":"100.0%"}
+[download] 100% of   35.40MiB in 00:11 at 3.12MiB/s
+[Merger] Merging formats into "Rick Astley - Never Gonna Give You Up.mp4"
+{"status":"finished","downloaded_bytes":37119590,"total_bytes":37119590,"speed":null,"eta":0,"_percent_str":"100.0%"}
+Deleting original file Rick Astley - Never Gonna Give You Up.f137.mp4 (pass -k to keep)
+Deleting original file Rick Astley - Never Gonna Give You Up.f140.m4a (pass -k to keep)

@@ -1,0 +1,11 @@
+{
+  "version": "1.1.0",
+  "notes": "v1.1.0 Release Notes:\n- Added automatic rate limit retry\n- Enhanced format probe caching\n- Improved system tray active download indicators",
+  "pub_date": "2026-11-01T00:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dGVzdC1zaWduYXR1cmUtZHVtbXktY2hlY2tzdW0=",
+      "url": "https://github.com/Shival-Gupta/yt-dlp-gui/releases/download/v1.1.0/yt-dlp-gui-1.1.0-setup.exe"
+    }
+  }
+}

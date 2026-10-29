@@ -1,0 +1,20 @@
+# Rust
+target/
+**/target/
+src-tauri/target/
+
+# Node & Frontend
+node_modules/
+dist/
+.pnpm-store/
+
+# OS and Temp
+.DS_Store
+Thumbs.db
+*.log
+.agents/teamwork/
+
+# Sidecar binaries downloaded at install/runtime
+src-tauri/binaries/ffmpeg*
+src-tauri/binaries/ffprobe*
+

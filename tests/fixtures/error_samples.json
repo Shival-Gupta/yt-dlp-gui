@@ -1,0 +1,50 @@
+[
+  {
+    "category": "age_restriction",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: Sign in to confirm your age. This video may be inappropriate for some users.",
+    "expected_message_substring": "age-restricted",
+    "expected_action": "Open Auth Panel"
+  },
+  {
+    "category": "rate_limited",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: HTTP Error 429: Too Many Requests. You are being rate-limited.",
+    "expected_message_substring": "Rate limited",
+    "expected_action": "Use a proxy or wait before retrying"
+  },
+  {
+    "category": "private_video",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: This video is private. Please sign in to view it.",
+    "expected_message_substring": "private",
+    "expected_action": "Provide credentials or cookies"
+  },
+  {
+    "category": "ffmpeg_missing",
+    "raw_stderr": "WARNING: You have requested merging of multiple formats but ffmpeg or avconv is not installed. The formats won't be merged.",
+    "expected_message_substring": "FFmpeg",
+    "expected_action": "Install FFmpeg or check Settings > Tools"
+  },
+  {
+    "category": "network_timeout",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: The read operation timed out after 30.0 seconds.",
+    "expected_message_substring": "timed out",
+    "expected_action": "Increase socket timeout or check network"
+  },
+  {
+    "category": "video_unavailable",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: Video unavailable. This video has been removed by the uploader.",
+    "expected_message_substring": "unavailable",
+    "expected_action": "Verify URL"
+  },
+  {
+    "category": "bot_verification",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: Sign in to confirm you’re not a bot. Use --cookies-from-browser or pass cookies file.",
+    "expected_message_substring": "bot",
+    "expected_action": "Export browser cookies in Auth Panel"
+  },
+  {
+    "category": "geo_restricted",
+    "raw_stderr": "ERROR: [youtube] dQw4w9WgXcQ: The uploader has not made this video available in your country.",
+    "expected_message_substring": "country",
+    "expected_action": "Configure proxy in Network Panel"
+  }
+]

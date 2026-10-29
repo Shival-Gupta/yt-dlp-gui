@@ -1,0 +1,142 @@
+{
+  "id": "dQw4w9WgXcQ",
+  "title": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+  "duration": 213,
+  "uploader": "Rick Astley",
+  "uploader_id": "@RickAstleyYT",
+  "channel_id": "UCuAXFkgsw1L7xaCfnd5JJOw",
+  "upload_date": "20091025",
+  "view_count": 1600000000,
+  "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+  "description": "The official video for Never Gonna Give You Up by Rick Astley",
+  "webpage_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "extractor": "youtube",
+  "extractor_key": "Youtube",
+  "formats": [
+    {
+      "format_id": "140",
+      "ext": "m4a",
+      "resolution": "audio only",
+      "fps": null,
+      "tbr": 129,
+      "vcodec": "none",
+      "acodec": "mp4a.40.2",
+      "filesize": 3617587,
+      "note": "medium, m4a_dash"
+    },
+    {
+      "format_id": "251",
+      "ext": "webm",
+      "resolution": "audio only",
+      "fps": null,
+      "tbr": 124,
+      "vcodec": "none",
+      "acodec": "opus",
+      "filesize": 3470786,
+      "note": "medium, webm_dash"
+    },
+    {
+      "format_id": "137",
+      "ext": "mp4",
+      "resolution": "1920x1080",
+      "fps": 30,
+      "tbr": 1327,
+      "vcodec": "avc1.640028",
+      "acodec": "none",
+      "filesize": 37119590,
+      "note": "1080p, mp4_dash"
+    },
+    {
+      "format_id": "313",
+      "ext": "webm",
+      "resolution": "3840x2160",
+      "fps": 60,
+      "tbr": 6768,
+      "vcodec": "vp9",
+      "acodec": "none",
+      "filesize": 189267968,
+      "note": "2160p60, webm_dash"
+    },
+    {
+      "format_id": "22",
+      "ext": "mp4",
+      "resolution": "1280x720",
+      "fps": 30,
+      "tbr": 1578,
+      "vcodec": "avc1.64001F",
+      "acodec": "mp4a.40.2",
+      "filesize": 44145049,
+      "note": "720p"
+    }
+  ],
+  "thumbnails": [
+    {
+      "url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg",
+      "width": 120,
+      "height": 90,
+      "id": "0"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+      "width": 320,
+      "height": 180,
+      "id": "1"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+      "width": 480,
+      "height": 360,
+      "id": "2"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+      "width": 1280,
+      "height": 720,
+      "id": "3"
+    }
+  ],
+  "subtitles": {
+    "en": [
+      {
+        "ext": "vtt",
+        "url": "https://www.youtube.com/api/timedtext?v=dQw4w9WgXcQ&lang=en"
+      }
+    ],
+    "es": [
+      {
+        "ext": "vtt",
+        "url": "https://www.youtube.com/api/timedtext?v=dQw4w9WgXcQ&lang=es"
+      }
+    ]
+  },
+  "automatic_captions": {
+    "en": [
+      {
+        "ext": "vtt",
+        "url": "https://www.youtube.com/api/timedtext?v=dQw4w9WgXcQ&lang=en&kind=asr"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "start_time": 0.0,
+      "end_time": 18.0,
+      "title": "Intro"
+    },
+    {
+      "start_time": 18.0,
+      "end_time": 85.0,
+      "title": "Verse 1 & Chorus"
+    },
+    {
+      "start_time": 85.0,
+      "end_time": 150.0,
+      "title": "Verse 2 & Bridge"
+    },
+    {
+      "start_time": 150.0,
+      "end_time": 213.0,
+      "title": "Outro"
+    }
+  ]
+}

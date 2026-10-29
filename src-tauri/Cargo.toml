@@ -1,0 +1,28 @@
+[package]
+name = "yt-dlp-gui"
+version = "1.0.0"
+description = "A modern, high-performance desktop GUI for yt-dlp"
+authors = ["Shival Gupta"]
+license = "MIT"
+repository = "https://github.com/Shival-Gupta/yt-dlp-gui"
+edition = "2021"
+
+[lib]
+name = "yt_dlp_gui_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0", features = ["tray-icon"] }
+tauri-plugin-shell = "2.0"
+tauri-plugin-notification = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4"] }
+regex = "1.10"
+
+[dev-dependencies]
+tempfile = "3.10"
