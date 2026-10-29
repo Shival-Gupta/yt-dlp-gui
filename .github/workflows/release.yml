@@ -101,7 +101,7 @@ jobs:
         shell: pwsh
 
       - name: Commit updated latest.json
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: update updates/latest.json for ${{ github.ref_name }}"
           file_pattern: updates/latest.json
