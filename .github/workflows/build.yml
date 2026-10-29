@@ -35,7 +35,7 @@ jobs:
           workspaces: src-tauri -> target
 
       - name: Cache yt-dlp sidecar
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe
           key: ytdlp-sidecar-${{ hashFiles('src-tauri/binaries/yt-dlp-version.txt') }}
