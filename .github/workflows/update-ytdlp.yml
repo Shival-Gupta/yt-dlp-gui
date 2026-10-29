@@ -13,7 +13,7 @@ jobs:
     name: Check and Update yt-dlp Sidecar
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Get latest yt-dlp release version
         id: ytdlp-version
