@@ -45,7 +45,7 @@ jobs:
 
       - name: Commit updated sidecar
         if: steps.ytdlp-version.outputs.version != steps.current-version.outputs.version
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore(sidecar): update yt-dlp to ${{ steps.ytdlp-version.outputs.version }}"
           file_pattern: "src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe src-tauri/binaries/yt-dlp-version.txt"
